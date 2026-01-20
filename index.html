@@ -1921,6 +1921,21 @@ function renderTodayView(root){
 function renderByDayView(root){
   root.appendChild(h('div',{class:'sectionTitle'},['By Day']));
 
+  // Expand/Collapse all (mobile-friendly)
+  const dayItems = [];
+  const toggleAllBtn = h('button',{class:'btn', onClick:()=>{
+    const allOpen = dayItems.length ? dayItems.every(x=>x.day.classList.contains('open')) : true;
+    const nextOpen = !allOpen;
+    for(const it of dayItems){
+      it.day.classList.toggle('open', nextOpen);
+      it.plusEl.textContent = nextOpen ? '−' : '+';
+    }
+    toggleAllBtn.textContent = nextOpen ? 'Collapse all' : 'Expand all';
+  }},['Collapse all']);
+
+  const byDayControls = h('div',{class:'btnRow'},[toggleAllBtn]);
+  root.appendChild(byDayControls);
+
   const toolkit = renderToolkit();
   if(toolkit) root.appendChild(toolkit);
 
@@ -1934,9 +1949,12 @@ function renderByDayView(root){
 
     const day = h('div',{class:'day'},[]);
     const plusEl = h('div',{class:'chip'},['−']);
+    dayItems.push({day, plusEl});
     const head = h('div',{class:'dayHead', onClick:()=>{
       day.classList.toggle('open');
       plusEl.textContent = day.classList.contains('open') ? '−' : '+';
+      const allOpen = dayItems.length ? dayItems.every(x=>x.day.classList.contains('open')) : true;
+      toggleAllBtn.textContent = allOpen ? 'Collapse all' : 'Expand all';
     }},[
       h('div',{},[
         h('div',{class:'dayTitle'},[`${dayLabel} • ${formatDayLabel(d)}`]),
@@ -1986,9 +2004,12 @@ function renderByDayView(root){
   if(optional.length){
     const day = h('div',{class:'day'},[]);
     const plusEl = h('div',{class:'chip'},['−']);
+    dayItems.push({day, plusEl});
     const head = h('div',{class:'dayHead', onClick:()=>{
       day.classList.toggle('open');
       plusEl.textContent = day.classList.contains('open') ? '−' : '+';
+      const allOpen = dayItems.length ? dayItems.every(x=>x.day.classList.contains('open')) : true;
+      toggleAllBtn.textContent = allOpen ? 'Collapse all' : 'Expand all';
     }},[
       h('div',{},[
         h('div',{class:'dayTitle'},['Optional • Any day']),
