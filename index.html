@@ -1,0 +1,1804 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#111111" />
+  <link rel="manifest" href="./manifest.webmanifest" />
+  <title>Vietnam Lifestyle Itinerary</title>
+  <style>
+    :root{
+      --bg:#ffffff;
+      --surface:#fafafa;
+      --card:#ffffff;
+      --ink:#111111;
+      --muted:#555555;
+      --line:#e6e6e6;
+      --chip:#f1f1f1;
+      --press:#f3f3f3;
+      --safeTint:#fbf7ef; /* soft beige */
+      --radius:16px;
+      --shadow:none;
+      --pad:14px;
+      --gap:12px;
+      --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Inter",Segoe UI,Roboto,Arial,sans-serif;
+    }
+    @media (prefers-reduced-motion: reduce){
+      *{scroll-behavior:auto !important; transition:none !important; animation:none !important;}
+    }
+    html,body{height:100%; background:var(--bg); color:var(--ink); font-family:var(--font);}
+    body{margin:0;}
+    .app{min-height:100%; display:flex; flex-direction:column; padding-bottom:78px;}
+
+    /* Header */
+    .header{
+      position:sticky; top:0; z-index:20;
+      background:rgba(255,255,255,0.92);
+      backdrop-filter:saturate(160%) blur(10px);
+      border-bottom:1px solid var(--line);
+      padding:10px 14px calc(10px + env(safe-area-inset-top));
+    }
+    .titleRow{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+    .title{
+      font-size:20px; line-height:1.2; font-weight:650;
+      letter-spacing:-0.01em;
+      white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+    }
+    .sub{
+      margin-top:6px;
+      display:flex; align-items:center; justify-content:space-between; gap:10px;
+    }
+    .pillRow{display:flex; gap:8px; align-items:center; flex-wrap:wrap;}
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:var(--card);
+      font-size:13px;
+      color:var(--muted);
+      user-select:none;
+    }
+    .pill select{
+      appearance:none; -webkit-appearance:none;
+      background:transparent;
+      border:none;
+      color:var(--ink);
+      font-size:13px;
+      outline:none;
+      max-width:200px;
+    }
+
+    .btn{
+      border:1px solid var(--line);
+      background:var(--card);
+      color:var(--ink);
+      padding:9px 12px;
+      border-radius:999px;
+      font-size:13px;
+      line-height:1;
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      cursor:pointer;
+      user-select:none;
+      touch-action:manipulation;
+    }
+    .btn:active{transform:scale(0.98); background:var(--press);}
+    .btn.ghost{background:transparent;}
+    .btn.primary{border-color:var(--ink);}
+
+    /* Toggle */
+    .toggle{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px;
+      border:1px solid var(--line);
+      border-radius:999px;
+      background:var(--card);
+      font-size:13px;
+      color:var(--muted);
+    }
+    .switch{width:38px; height:22px; border-radius:999px; background:#ddd; position:relative; flex:0 0 auto;}
+    .switch::after{content:""; position:absolute; top:3px; left:3px; width:16px; height:16px; border-radius:50%; background:white; transition:transform 160ms ease;}
+    .switch.on{background:#111;}
+    .switch.on::after{transform:translateX(16px);}
+
+    /* Content */
+    .content{padding:14px; display:flex; flex-direction:column; gap:12px;}
+
+    .sectionTitle{
+      font-size:14px;
+      text-transform:uppercase;
+      letter-spacing:0.08em;
+      color:var(--muted);
+      margin:4px 2px 8px;
+    }
+
+    .toolkit{
+      position:sticky;
+      top:calc(74px + env(safe-area-inset-top));
+      z-index:10;
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:var(--surface);
+      overflow:hidden;
+    }
+    .toolkitHead{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 14px;
+    }
+    .toolkitHead strong{font-size:13px;}
+    .toolkitBody{padding:0 14px 12px; color:var(--muted); font-size:13px; line-height:1.35;}
+    .toolkitBody ul{margin:8px 0 0 18px; padding:0;}
+
+    /* Card */
+    .card{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:var(--card);
+      padding:14px;
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+    }
+    .card.safe{background:var(--safeTint);}
+    .row{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+    .meta{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+    .chip{
+      display:inline-flex;
+      align-items:center;
+      padding:6px 10px;
+      border-radius:999px;
+      background:var(--chip);
+      font-size:12px;
+      color:var(--ink);
+    }
+    .chip.muted{color:var(--muted);} 
+    .chip.outline{background:transparent; border:1px solid var(--line);} 
+
+    .h1{font-size:20px; font-weight:650; letter-spacing:-0.01em; margin:0;}
+    .subline{font-size:13px; color:var(--muted); display:flex; gap:8px; flex-wrap:wrap;}
+    .addr{
+      font-size:13px;
+      color:var(--ink);
+      text-decoration:none;
+      border-radius:10px;
+      padding:8px 10px;
+      background:var(--surface);
+      border:1px solid var(--line);
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+    }
+    .addr:active{transform:scale(0.99); background:var(--press);}
+    .addr small{color:var(--muted);}
+
+    .btnRow{display:flex; gap:8px; flex-wrap:wrap;}
+
+    details{
+      border:1px dashed var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      background:#fff;
+    }
+    details summary{
+      cursor:pointer;
+      list-style:none;
+      font-size:13px;
+      color:var(--ink);
+      font-weight:600;
+    }
+    details summary::-webkit-details-marker{display:none;}
+    .noteArea{
+      width:100%;
+      min-height:64px;
+      resize:vertical;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      font-family:var(--font);
+      font-size:13px;
+      outline:none;
+      background:#fff;
+      box-sizing:border-box;
+    }
+
+    .collapsed{
+      opacity:0.92;
+    }
+
+    /* Accordion day */
+    .day{
+      border:1px solid var(--line);
+      border-radius:var(--radius);
+      background:var(--surface);
+      overflow:hidden;
+    }
+    .dayHead{
+      padding:12px 14px;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:10px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .dayHead:active{background:var(--press);}
+    .dayTitle{font-size:14px; font-weight:700;}
+    .dayMeta{font-size:12px; color:var(--muted);}
+    .dayBody{padding:14px; display:none; gap:12px; flex-direction:column;}
+    .day.open .dayBody{display:flex;}
+
+    /* Bottom tabs */
+    .tabs{
+      position:fixed;
+      left:0; right:0;
+      bottom:0;
+      padding:10px 12px calc(10px + env(safe-area-inset-bottom));
+      background:rgba(255,255,255,0.92);
+      backdrop-filter:saturate(160%) blur(10px);
+      border-top:1px solid var(--line);
+      display:flex;
+      gap:8px;
+      justify-content:space-between;
+      z-index:30;
+    }
+    .tab{
+      flex:1;
+      text-align:center;
+      padding:10px 8px;
+      border-radius:999px;
+      border:1px solid var(--line);
+      background:var(--card);
+      font-size:13px;
+      color:var(--muted);
+      cursor:pointer;
+      user-select:none;
+    }
+    .tab.active{
+      border-color:var(--ink);
+      color:var(--ink);
+    }
+    .tab:active{transform:scale(0.98); background:var(--press);}
+
+    /* Modal bottom sheet */
+    .overlay{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,0.35);
+      display:none;
+      align-items:flex-end;
+      justify-content:center;
+      z-index:50;
+    }
+    .overlay.show{display:flex;}
+    .sheet{
+      width:100%;
+      max-width:520px;
+      background:var(--bg);
+      border-radius:18px 18px 0 0;
+      border:1px solid var(--line);
+      padding:12px 14px 18px;
+      box-sizing:border-box;
+    }
+    .sheetHandle{width:44px;height:5px;border-radius:999px;background:#ddd;margin:6px auto 10px;}
+    .sheetTitle{font-weight:750; font-size:16px; margin:0 0 8px;}
+    .sheetText{font-size:13px; color:var(--muted); line-height:1.35;}
+
+    .twoCol{display:grid; grid-template-columns:1fr; gap:12px;}
+    @media (min-width:520px){
+      .twoCol{grid-template-columns:1fr 1fr;}
+    }
+
+    .danger{color:#b00020;}
+    .small{font-size:12px; color:var(--muted);}
+
+    input[type="text"], input[type="url"]{
+      width:100%; box-sizing:border-box;
+      border:1px solid var(--line);
+      border-radius:12px;
+      padding:10px 12px;
+      font-family:var(--font);
+      font-size:13px;
+      outline:none;
+      background:#fff;
+    }
+    label{font-size:12px; color:var(--muted); display:block; margin:2px 2px 6px;}
+
+    .hr{height:1px; background:var(--line); margin:10px 0;}
+
+    .linkList{display:flex; flex-direction:column; gap:8px;}
+    .linkItem{
+      display:flex; gap:8px; align-items:center; justify-content:space-between;
+      padding:10px 12px;
+      border:1px solid var(--line);
+      border-radius:12px;
+      background:var(--card);
+    }
+    .linkItem a{color:var(--ink); text-decoration:none; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:64vw;}
+
+    .kbd{font-family:ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono","Courier New",monospace; font-size:12px; padding:2px 6px; border:1px solid var(--line); border-radius:8px; background:#fff;}
+  </style>
+</head>
+<body>
+  <div class="app" id="app">
+    <div class="header">
+      <div class="titleRow">
+        <div class="title" id="appTitle">Vietnam Lifestyle Map — Jan 26–30</div>
+        <button class="btn" id="btnInstall" style="display:none;">Install</button>
+      </div>
+      <div class="sub">
+        <div class="pillRow">
+          <div class="pill">
+            <span class="small">View</span>
+            <select id="dateSelect" aria-label="Select date"></select>
+          </div>
+          <div class="toggle" id="ibsToggle" role="button" aria-label="Toggle IBS mode" tabindex="0">
+            <span>IBS Mode</span>
+            <div class="switch" id="ibsSwitch"></div>
+          </div>
+        </div>
+        <div class="pillRow">
+          <button class="btn" id="btnHotelMaps">Hotel Maps</button>
+          <button class="btn" id="btnHotelGrab">Grab to Hotel</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="content" id="viewRoot">
+      <!-- Views render here -->
+    </div>
+
+    <div class="tabs" role="tablist" aria-label="Navigation">
+      <div class="tab" data-tab="today" role="tab">Today</div>
+      <div class="tab active" data-tab="byday" role="tab">By Day</div>
+      <div class="tab" data-tab="map" role="tab">Map List</div>
+      <div class="tab" data-tab="notes" role="tab">Notes</div>
+      <div class="tab" data-tab="data" role="tab">Data</div>
+    </div>
+  </div>
+
+  <!-- Bottom sheet modal -->
+  <div class="overlay" id="overlay" aria-hidden="true">
+    <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="sheetTitle">
+      <div class="sheetHandle"></div>
+      <h3 class="sheetTitle" id="sheetTitle">Prompts</h3>
+      <div class="sheetText" id="sheetBody"></div>
+      <div class="hr"></div>
+      <div style="display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn" id="sheetClose">Close</button>
+      </div>
+    </div>
+  </div>
+
+<script>
+/*****
+ * Vietnam Itinerary Dashboard (Notion-like, black & white)
+ * - Edit HOTEL_ADDRESS and ITINERARY_DEFAULT below
+ * - All edits persist in localStorage
+ *****/
+
+const APP = {
+  version: '1.0.0',
+  storageKeys: {
+    itinerary: 'vn_itinerary_json_v1',
+    state: 'vn_itinerary_state_v1',
+    backup: 'vn_itinerary_backup_v1'
+  },
+  timeOrder: ['Morning','Late Morning','Midday','Lunch','Afternoon','Golden Hour','Evening','Night'],
+};
+
+// 1) Hotel placeholder (edit anytime)
+const HOTEL_ADDRESS = "[EDIT ME] PIN Truong Quyen Hotel, District 3, Ho Chi Minh City";
+
+const TRIP_META = {
+  title: 'Vietnam Lifestyle Map — Jan 26–30',
+  base: 'PIN Truong Quyen Hotel (District 3)',
+  city: 'Ho Chi Minh City, Vietnam'
+};
+
+function encodeQ(s){return encodeURIComponent((s||'').trim());}
+function mapsUrlFromAddress(addr){
+  const q = encodeQ(addr);
+  return `https://www.google.com/maps/search/?api=1&query=${q}`;
+}
+function grabUrlFromAddress(addr){
+  // Best-effort deep link (works as a web fallback)
+  const dropoff = encodeQ(addr);
+  return `https://www.grab.com/sg/transport/?pickup=My%20Location&dropoff=${dropoff}`;
+}
+
+// 2) Default itinerary data (editable)
+const ITINERARY_DEFAULT = [
+  {
+    id: 'hotel',
+    day_label: 'Arrival',
+    date: '2026-01-26',
+    time_block: 'Night',
+    start_time: '21:00',
+    end_time: '',
+    name: 'PIN Truong Quyen Hotel (Check-in + Rest)',
+    type: 'Hotel',
+    address: HOTEL_ADDRESS,
+    district: 'D3',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Arrival-only. Hydrate, warm shower, sleep. Keep snacks simple.',
+    creative_mode: 'Rest',
+    creative_prompts: ['Write 3 intentions for the trip.', 'Do a 2-minute “what I notice” list.', 'Pick one theme: texture / light / signage.'],
+    priority: 'Must',
+    duration_mins: 30,
+    tags: ['hotel','arrival'],
+    skip_if_tired: false
+  },
+  // DAY 1 — Tue Jan 27
+  {
+    id: 'd1-cokernut',
+    day_label: 'Day 1',
+    date: '2026-01-27',
+    time_block: 'Morning',
+    start_time: '09:30',
+    end_time: '11:00',
+    name: 'Cokernut Café (Ease-in start)',
+    type: 'Cafe',
+    address: '[EDIT] District 3 cafe near hotel',
+    district: 'D3',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Order: black coffee / matcha with plant milk. Avoid heavy dairy + syrups.',
+    creative_mode: 'Read',
+    creative_prompts: ['Read 1 chapter only.', 'Underline 3 sentences worth remembering.', 'Write 5 words that describe Saigon’s mood today.'],
+    priority: 'Must',
+    duration_mins: 90,
+    tags: ['cafe','slow-start'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd1-taipoz',
+    day_label: 'Day 1',
+    date: '2026-01-27',
+    time_block: 'Late Morning',
+    start_time: '11:20',
+    end_time: '12:10',
+    name: 'Taipoz Art Supplies',
+    type: 'Stationery',
+    address: '[EDIT] Taipoz address',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'No food. Buy postcard paper + watercolor refills.',
+    creative_mode: 'Sketch',
+    creative_prompts: ['Buy 1 postcard-size paper to paint today.', 'Choose a 3-color palette.', 'Sketch 3 packaging labels.'],
+    priority: 'Nice',
+    duration_mins: 50,
+    tags: ['art-supplies'],
+    skip_if_tired: true
+  },
+  {
+    id: 'd1-artbook',
+    day_label: 'Day 1',
+    date: '2026-01-27',
+    time_block: 'Late Morning',
+    start_time: '12:20',
+    end_time: '13:00',
+    name: 'Artbook Saigon (arts & souvenirs)',
+    type: 'Bookstore',
+    address: '[EDIT] Artbook Saigon address',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'No food. Great for prints + zines.',
+    creative_mode: 'Sketch',
+    creative_prompts: ['Sketch a book cover layout.', 'Copy 1 typography style you like.', 'Pick 1 souvenir that feels “you”.'],
+    priority: 'Must',
+    duration_mins: 40,
+    tags: ['books','souvenirs'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd1-postoffice',
+    day_label: 'Day 1',
+    date: '2026-01-27',
+    time_block: 'Midday',
+    start_time: '13:20',
+    end_time: '14:10',
+    name: 'Saigon Central Post Office',
+    type: 'Landmark',
+    address: '2 Cong xa Paris, District 1, Ho Chi Minh City',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Use this as a seated rest stop. Keep cool + hydrated.',
+    creative_mode: 'Sketch',
+    creative_prompts: ['Paint the ceiling arches (simple shapes).', 'Sketch one vintage map panel.', 'Capture symmetry + people movement in 3 photos.'],
+    priority: 'Must',
+    duration_mins: 50,
+    tags: ['architecture','sketch'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd1-lunch',
+    day_label: 'Day 1',
+    date: '2026-01-27',
+    time_block: 'Lunch',
+    start_time: '14:20',
+    end_time: '15:20',
+    name: 'Lunch (choose: Bánh Xèo 46A OR Poke Saigon fallback)',
+    type: 'Restaurant',
+    address: '[EDIT] Banh Xeo 46A / Poke Saigon',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Caution',
+    ibs_notes: 'Ask: “No garlic/onion”. If unsure, choose poke (rice + plain fish).',
+    creative_mode: 'Rest',
+    creative_prompts: ['Eat slowly. Stop at 80% full.', 'Walk 5–10 mins after.', 'Note 1 texture + 1 flavor you liked.'],
+    priority: 'Must',
+    duration_mins: 60,
+    tags: ['food','ibs'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd1-gallery',
+    day_label: 'Day 1',
+    date: '2026-01-27',
+    time_block: 'Afternoon',
+    start_time: '15:45',
+    end_time: '16:25',
+    name: 'Galerie Quynh (quiet viewing)',
+    type: 'Art store',
+    address: '[EDIT] Galerie Quynh address',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Calm, aircon. Great recovery stop.',
+    creative_mode: 'Photo',
+    creative_prompts: ['Photograph 3 textures (wall, floor, signage).', 'Find 1 color you keep noticing.', 'Sketch 1 composition in 2 minutes.'],
+    priority: 'Nice',
+    duration_mins: 40,
+    tags: ['gallery'],
+    skip_if_tired: true
+  },
+  {
+    id: 'd1-dinner',
+    day_label: 'Day 1',
+    date: '2026-01-27',
+    time_block: 'Evening',
+    start_time: '18:00',
+    end_time: '19:10',
+    name: 'Quán Bụi Bistro (early dinner)',
+    type: 'Restaurant',
+    address: '[EDIT] Quan Bui address',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Caution',
+    ibs_notes: 'Go light: rice + grilled fish/chicken. No garlic/onion. Skip fried toppings.',
+    creative_mode: 'Rest',
+    creative_prompts: ['Write 3 highlights from Day 1.', 'Choose 1 photo to keep.', 'Plan tomorrow’s “one main goal”.'],
+    priority: 'Must',
+    duration_mins: 70,
+    tags: ['dinner'],
+    skip_if_tired: false
+  },
+
+  // DAY 2 — Wed Jan 28
+  {
+    id: 'd2-lusine',
+    day_label: 'Day 2',
+    date: '2026-01-28',
+    time_block: 'Morning',
+    start_time: '09:30',
+    end_time: '11:00',
+    name: "L’Usine Thảo Điền",
+    type: 'Cafe',
+    address: '[EDIT] L’Usine Thao Dien address',
+    district: 'D2',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Order: eggs + simple toast or rice dish. Avoid heavy cream desserts.',
+    creative_mode: 'Read',
+    creative_prompts: ['Read 1 chapter.', 'Sketch table still-life (cup + plant).', 'Capture 3 minimal product shots.'],
+    priority: 'Must',
+    duration_mins: 90,
+    tags: ['cafe','design'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd2-muji',
+    day_label: 'Day 2',
+    date: '2026-01-28',
+    time_block: 'Late Morning',
+    start_time: '11:40',
+    end_time: '12:40',
+    name: 'MUJI Saigon Centre (replace Vintage Emporium)',
+    type: 'Concept store',
+    address: 'Saigon Centre, 65 Le Loi, District 1, Ho Chi Minh City',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'No food needed. Great for calm shopping + form studies.',
+    creative_mode: 'Sketch',
+    creative_prompts: ['Sketch a shelf rhythm (rectangles only).', 'Note 3 packaging principles.', 'Photograph one “material palette”.'],
+    priority: 'Must',
+    duration_mins: 60,
+    tags: ['muji','lifestyle'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd2-lunch',
+    day_label: 'Day 2',
+    date: '2026-01-28',
+    time_block: 'Lunch',
+    start_time: '13:00',
+    end_time: '14:00',
+    name: 'Lunch (IBS-safe placeholder)',
+    type: 'Restaurant',
+    address: '[EDIT] Add your safest rice + protein lunch',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Choose rice + grilled protein. Ask: no garlic/onion. Avoid heavy sauces.',
+    creative_mode: 'Rest',
+    creative_prompts: ['Water break.', 'Short 10-min walk.', 'Write 1 sentence about today’s style.'],
+    priority: 'Must',
+    duration_mins: 60,
+    tags: ['lunch'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd2-aluvia',
+    day_label: 'Day 2',
+    date: '2026-01-28',
+    time_block: 'Afternoon',
+    start_time: '14:30',
+    end_time: '15:10',
+    name: 'Aluvia Chocolatier',
+    type: 'Concept store',
+    address: '[EDIT] Aluvia Chocolatier address',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Caution',
+    ibs_notes: 'Small tasting only. Prefer darker chocolate, avoid heavy dairy truffles.',
+    creative_mode: 'Sketch',
+    creative_prompts: ['Sketch the packaging layout.', 'Photograph textures: foil, paper, emboss.', 'Write 3 words: bitter / sweet / warm?'],
+    priority: 'Nice',
+    duration_mins: 40,
+    tags: ['chocolate'],
+    skip_if_tired: true
+  },
+  {
+    id: 'd2-optional-cafe',
+    day_label: 'Day 2',
+    date: '2026-01-28',
+    time_block: 'Afternoon',
+    start_time: '15:30',
+    end_time: '16:30',
+    name: 'Optional café sketch / rest',
+    type: 'Cafe',
+    address: '[EDIT] Add any calm café near you',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Hydrate. Choose tea or black coffee. Avoid dairy + syrups.',
+    creative_mode: 'Sketch',
+    creative_prompts: ['Paint 1 quick street scene (10 mins).', 'Try a 3-color palette.', 'Take 5 photos of shadows.'],
+    priority: 'Optional',
+    duration_mins: 60,
+    tags: ['rest'],
+    skip_if_tired: true
+  },
+  {
+    id: 'd2-dinner',
+    day_label: 'Day 2',
+    date: '2026-01-28',
+    time_block: 'Evening',
+    start_time: '18:00',
+    end_time: '19:10',
+    name: 'Đèn Lồng Restaurant (early dinner)',
+    type: 'Restaurant',
+    address: '[EDIT] Den Long address',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Caution',
+    ibs_notes: 'Go light: steamed / grilled + rice. Avoid garlic/onion and heavy sauces.',
+    creative_mode: 'Rest',
+    creative_prompts: ['Pick your best photo today.', 'Write 2 lines: what surprised you?', 'Plan tomorrow’s one must-do.'],
+    priority: 'Must',
+    duration_mins: 70,
+    tags: ['dinner'],
+    skip_if_tired: false
+  },
+
+  // DAY 3 — Thu Jan 29
+  {
+    id: 'd3-quan-an-ngon',
+    day_label: 'Day 3',
+    date: '2026-01-29',
+    time_block: 'Morning',
+    start_time: '09:30',
+    end_time: '10:40',
+    name: 'Quán Ăn Ngon (breakfast/brunch)',
+    type: 'Restaurant',
+    address: '160 Pasteur, District 1, Ho Chi Minh City',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Caution',
+    ibs_notes: 'Choose: pho/bun with no garlic/onion. Avoid fried toppings and spicy.',
+    creative_mode: 'Read',
+    creative_prompts: ['Write 3 “design notes” from the space.', 'Photograph signage & menus.', 'Sketch one bowl shape in 2 mins.'],
+    priority: 'Must',
+    duration_mins: 70,
+    tags: ['food'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd3-stationery',
+    day_label: 'Day 3',
+    date: '2026-01-29',
+    time_block: 'Late Morning',
+    start_time: '11:10',
+    end_time: '12:10',
+    name: 'Stationery street / local shops',
+    type: 'Stationery',
+    address: '[EDIT] Add stationery cluster address',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'No food. Buy: postcards, envelopes, pens.',
+    creative_mode: 'Sketch',
+    creative_prompts: ['Collect 3 paper textures.', 'Sketch 3 label ideas for Lota Kopi.', 'Take 5 photos of typefaces.'],
+    priority: 'Nice',
+    duration_mins: 60,
+    tags: ['stationery'],
+    skip_if_tired: true
+  },
+  {
+    id: 'd3-lunch-lam-xua',
+    day_label: 'Day 3',
+    date: '2026-01-29',
+    time_block: 'Lunch',
+    start_time: '12:40',
+    end_time: '13:40',
+    name: 'Lam Xưa — Vietnamese restaurant',
+    type: 'Restaurant',
+    address: '[EDIT] Lam Xua address',
+    district: 'D3',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Caution',
+    ibs_notes: 'Choose grilled fish/chicken + rice. Ask: no garlic/onion.',
+    creative_mode: 'Rest',
+    creative_prompts: ['Slow meal. 80% full.', 'Short walk after.', '1 sentence reflection.'],
+    priority: 'Must',
+    duration_mins: 60,
+    tags: ['lunch'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd3-museum',
+    day_label: 'Day 3',
+    date: '2026-01-29',
+    time_block: 'Afternoon',
+    start_time: '14:20',
+    end_time: '16:00',
+    name: 'HCMC Museum of Fine Arts',
+    type: 'Museum',
+    address: '97A Pho Duc Chinh, District 1, Ho Chi Minh City',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Great cool-down stop. Sit when needed.',
+    creative_mode: 'Sketch',
+    creative_prompts: ['Sketch a staircase perspective.', 'Paint a courtyard light study.', 'Photograph 3 patterns (tiles, ironwork, wood).'],
+    priority: 'Must',
+    duration_mins: 100,
+    tags: ['museum','sketch'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd3-goldenhour',
+    day_label: 'Day 3',
+    date: '2026-01-29',
+    time_block: 'Golden Hour',
+    start_time: '16:20',
+    end_time: '17:20',
+    name: 'Golden hour street photography walk',
+    type: 'Landmark',
+    address: '[EDIT] Walk around museum area',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Keep it short. Hydrate. Avoid long heat exposure.',
+    creative_mode: 'Photo',
+    creative_prompts: ['Shoot backlight silhouettes.', 'Find 3 shadow shapes.', 'Capture 1 “quiet moment”.'],
+    priority: 'Nice',
+    duration_mins: 60,
+    tags: ['photo'],
+    skip_if_tired: true
+  },
+  {
+    id: 'd3-rest',
+    day_label: 'Day 3',
+    date: '2026-01-29',
+    time_block: 'Evening',
+    start_time: '18:00',
+    end_time: '',
+    name: 'Early night / rest / pack a little',
+    type: 'Hotel',
+    address: HOTEL_ADDRESS,
+    district: 'D3',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Light dinner only if hungry. Keep it simple.',
+    creative_mode: 'Rest',
+    creative_prompts: ['Review photos.', 'Pick 1 sketch to finish tomorrow.', 'Write 3 gratitudes.'],
+    priority: 'Must',
+    duration_mins: 30,
+    tags: ['rest'],
+    skip_if_tired: false
+  },
+
+  // DAY 4 — Fri Jan 30 (flight 10PM)
+  {
+    id: 'd4-kocha',
+    day_label: 'Day 4',
+    date: '2026-01-30',
+    time_block: 'Morning',
+    start_time: '09:30',
+    end_time: '10:40',
+    name: 'Kocha Matcha Spot (reading + reflection)',
+    type: 'Cafe',
+    address: '[EDIT] Kocha Matcha Spot address',
+    district: 'D3',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Matcha/tea with plant milk. Avoid condensed milk.',
+    creative_mode: 'Read',
+    creative_prompts: ['Write “what changed in me this trip?”', 'Read 1 chapter.', 'List 5 visual motifs you noticed.'],
+    priority: 'Must',
+    duration_mins: 70,
+    tags: ['cafe'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd4-market',
+    day_label: 'Day 4',
+    date: '2026-01-30',
+    time_block: 'Late Morning',
+    start_time: '11:10',
+    end_time: '12:20',
+    name: 'Ben Thanh Market (souvenirs + street photos)',
+    type: 'Market',
+    address: 'Ben Thanh Market, District 1, Ho Chi Minh City',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Caution',
+    ibs_notes: 'Avoid random fried snacks. If hungry: fruit like banana/papaya.',
+    creative_mode: 'Photo',
+    creative_prompts: ['Shoot color blocks (fruit stalls).', 'Capture hands at work.', 'Paint one basket/produce still life.'],
+    priority: 'Must',
+    duration_mins: 70,
+    tags: ['market','souvenirs'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd4-lunch',
+    day_label: 'Day 4',
+    date: '2026-01-30',
+    time_block: 'Lunch',
+    start_time: '12:45',
+    end_time: '13:40',
+    name: 'Lunch (choose: Poke Saigon / Rice Field / Quán Ăn Ngon light)',
+    type: 'Restaurant',
+    address: '[EDIT] Choose your safest lunch near D1',
+    district: 'D1',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Eat early. Keep it light. No garlic/onion. Avoid spicy and fried.',
+    creative_mode: 'Rest',
+    creative_prompts: ['Hydrate.', 'Short walk after.', 'Write 1 line: “my favorite place was…”.'],
+    priority: 'Must',
+    duration_mins: 55,
+    tags: ['lunch','flight-day'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd4-pack',
+    day_label: 'Day 4',
+    date: '2026-01-30',
+    time_block: 'Afternoon',
+    start_time: '14:30',
+    end_time: '17:00',
+    name: 'Hotel rest + pack (IBS buffer)',
+    type: 'Hotel',
+    address: HOTEL_ADDRESS,
+    district: 'D3',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Rest window protects digestion before flight.',
+    creative_mode: 'Rest',
+    creative_prompts: ['Organize souvenirs.', 'Pick 3 photos to keep.', 'Write “next trip: what I’d do differently”.'],
+    priority: 'Must',
+    duration_mins: 150,
+    tags: ['pack'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd4-dinner',
+    day_label: 'Day 4',
+    date: '2026-01-30',
+    time_block: 'Evening',
+    start_time: '17:30',
+    end_time: '18:20',
+    name: 'Very light early dinner (near hotel)',
+    type: 'Restaurant',
+    address: '[EDIT] Choose rice + egg/chicken near D3',
+    district: 'D3',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'No new foods today. Keep it plain. Skip coffee after this.',
+    creative_mode: 'Rest',
+    creative_prompts: ['Close the trip: one sentence summary.', 'Breathe 2 minutes.', 'Check passport + essentials.'],
+    priority: 'Must',
+    duration_mins: 50,
+    tags: ['dinner'],
+    skip_if_tired: false
+  },
+  {
+    id: 'd4-airport',
+    day_label: 'Day 4',
+    date: '2026-01-30',
+    time_block: 'Night',
+    start_time: '19:00',
+    end_time: '22:00',
+    name: 'Airport transfer + flight (10:00 PM)',
+    type: 'Transit',
+    address: 'Tan Son Nhat International Airport (SGN), Ho Chi Minh City',
+    district: 'Airport',
+    google_maps_url: '',
+    grab_url: '',
+    ibs_level: 'Safe',
+    ibs_notes: 'Leave early. Hydrate. Keep snacks simple.',
+    creative_mode: 'Rest',
+    creative_prompts: ['Choose your favorite photo of the trip.', 'Write 3 learnings.', 'Plan one action inspired by Vietnam.'],
+    priority: 'Must',
+    duration_mins: 180,
+    tags: ['flight'],
+    skip_if_tired: false
+  }
+];
+
+/******** State ********/
+function loadJSON(key, fallback){
+  try{
+    const raw = localStorage.getItem(key);
+    if(!raw) return fallback;
+    return JSON.parse(raw);
+  }catch(e){
+    return fallback;
+  }
+}
+function saveJSON(key, value){
+  localStorage.setItem(key, JSON.stringify(value));
+}
+
+let itinerary = loadJSON(APP.storageKeys.itinerary, null);
+if(!Array.isArray(itinerary)) itinerary = structuredClone(ITINERARY_DEFAULT);
+
+let state = loadJSON(APP.storageKeys.state, {
+  done: {},
+  skipped: {},
+  stopNotes: {},
+  dayNotes: {},
+  dayInspo: {}, // {date: [{label,url}]}
+  settings: {
+    ibsMode: false,
+    filterSafeOnly: false,
+    hideSkipIfTired: false,
+    selectedDate: null,
+    activeTab: 'byday'
+  }
+});
+
+// Ensure hotel urls are generated
+function hydrateLinks(){
+  for(const s of itinerary){
+    if(!s.address) continue;
+    if(!s.google_maps_url) s.google_maps_url = mapsUrlFromAddress(s.address);
+    if(!s.grab_url) s.grab_url = grabUrlFromAddress(s.address);
+  }
+}
+hydrateLinks();
+
+function persistAll(){
+  saveJSON(APP.storageKeys.itinerary, itinerary);
+  saveJSON(APP.storageKeys.state, state);
+}
+
+/******** UI helpers ********/
+const el = (sel, root=document) => root.querySelector(sel);
+const els = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+function h(tag, attrs={}, children=[]){
+  const node = document.createElement(tag);
+  for(const [k,v] of Object.entries(attrs||{})){
+    if(k === 'class') node.className = v;
+    else if(k === 'html') node.innerHTML = v;
+    else if(k.startsWith('on') && typeof v === 'function') node.addEventListener(k.slice(2), v);
+    else if(v !== null && v !== undefined) node.setAttribute(k, v);
+  }
+  for(const c of (Array.isArray(children) ? children : [children])){
+    if(c === null || c === undefined) continue;
+    if(typeof c === 'string') node.appendChild(document.createTextNode(c));
+    else node.appendChild(c);
+  }
+  return node;
+}
+
+function formatDayLabel(dateStr){
+  const d = new Date(dateStr+'T00:00:00');
+  const opt = {weekday:'short', month:'short', day:'numeric'};
+  return d.toLocaleDateString(undefined,opt);
+}
+
+function timeRange(s){
+  const a = (s.start_time||'').trim();
+  const b = (s.end_time||'').trim();
+  if(a && b) return `${a}–${b}`;
+  if(a) return a;
+  return '';
+}
+
+function stopSortKey(s){
+  const tIdx = APP.timeOrder.indexOf(s.time_block);
+  const t = (tIdx<0?99:tIdx);
+  const start = (s.start_time||'').padStart(5,'0');
+  return `${t}-${start}-${s.name}`;
+}
+
+function getDates(){
+  const dates = [...new Set(itinerary.map(s=>s.date))].sort();
+  return dates;
+}
+
+function selectedDate(){
+  const dates = getDates();
+  const today = new Date();
+  const todayStr = today.toISOString().slice(0,10);
+  const saved = state.settings.selectedDate;
+  if(saved && dates.includes(saved)) return saved;
+  // Default to first day of trip if today not in range
+  if(dates.includes(todayStr)) return todayStr;
+  return dates[0] || todayStr;
+}
+
+function setSelectedDate(d){
+  state.settings.selectedDate = d;
+  persistAll();
+}
+
+function openSheet(title, htmlBody){
+  el('#sheetTitle').textContent = title;
+  el('#sheetBody').innerHTML = htmlBody;
+  const ov = el('#overlay');
+  ov.classList.add('show');
+  ov.setAttribute('aria-hidden','false');
+}
+function closeSheet(){
+  const ov = el('#overlay');
+  ov.classList.remove('show');
+  ov.setAttribute('aria-hidden','true');
+}
+
+function copyText(text){
+  if(!text) return;
+  navigator.clipboard?.writeText(text).catch(()=>{});
+}
+
+/******** Rendering ********/
+function renderHeader(){
+  el('#appTitle').textContent = TRIP_META.title;
+
+  // Date selector
+  const sel = el('#dateSelect');
+  const dates = getDates();
+  sel.innerHTML = '';
+  for(const d of dates){
+    const opt = document.createElement('option');
+    const dayLabel = formatDayLabel(d);
+    // Find day_label for that date
+    const dayLbl = (itinerary.find(s=>s.date===d)?.day_label) || '';
+    opt.value = d;
+    opt.textContent = `${dayLbl} • ${dayLabel}`;
+    sel.appendChild(opt);
+  }
+  sel.value = selectedDate();
+  sel.onchange = () => { setSelectedDate(sel.value); render(); };
+
+  // IBS toggle
+  const sw = el('#ibsSwitch');
+  if(state.settings.ibsMode) sw.classList.add('on'); else sw.classList.remove('on');
+  el('#ibsToggle').onclick = () => { state.settings.ibsMode = !state.settings.ibsMode; persistAll(); render(); };
+  el('#ibsToggle').onkeydown = (e) => { if(e.key==='Enter' || e.key===' ') el('#ibsToggle').click(); };
+
+  // Hotel buttons
+  const hotel = itinerary.find(s=>s.id==='hotel') || { address: HOTEL_ADDRESS };
+  const hm = hotel.google_maps_url || mapsUrlFromAddress(hotel.address || HOTEL_ADDRESS);
+  const hg = hotel.grab_url || grabUrlFromAddress(hotel.address || HOTEL_ADDRESS);
+  el('#btnHotelMaps').onclick = () => window.open(hm, '_blank');
+  el('#btnHotelGrab').onclick = () => window.open(hg, '_blank');
+
+  // Install prompt
+  if(window.__deferredPrompt){
+    el('#btnInstall').style.display = 'inline-flex';
+  }else{
+    el('#btnInstall').style.display = 'none';
+  }
+}
+
+function renderToolkit(){
+  if(!state.settings.ibsMode) return null;
+  const wrap = h('div',{class:'toolkit'},[
+    h('div',{class:'toolkitHead'},[
+      h('strong',{},['IBS Toolkit']),
+      h('button',{class:'btn', onClick:()=>{
+        const body = el('#toolkitBody');
+        const open = body.style.display !== 'none';
+        body.style.display = open ? 'none' : 'block';
+      }},['Toggle'])
+    ]),
+    h('div',{class:'toolkitBody', id:'toolkitBody'},[
+      h('div',{class:'small'},['Quick reminders for low-risk days:']),
+      h('ul',{},[
+        h('li',{},['Water + electrolytes.']),
+        h('li',{},['Avoid garlic/onion; sauces on the side.']),
+        h('li',{},['Prefer rice + lean protein; go easy on fried.']),
+        h('li',{},['Early dinner; rest window before flight.']),
+        h('li',{},['If unsure, choose the simplest option.'])
+      ]),
+      h('div',{style:'margin-top:10px; display:flex; gap:8px; flex-wrap:wrap;'},[
+        h('div',{class:'toggle', role:'button', tabindex:'0', onClick:()=>{state.settings.filterSafeOnly=!state.settings.filterSafeOnly; persistAll(); render();}},[
+          h('span',{},['Safe+'] ),
+          h('div',{class:'switch'+(state.settings.filterSafeOnly?' on':'')})
+        ]),
+        h('div',{class:'toggle', role:'button', tabindex:'0', onClick:()=>{state.settings.hideSkipIfTired=!state.settings.hideSkipIfTired; persistAll(); render();}},[
+          h('span',{},['Hide “Skip if tired”'] ),
+          h('div',{class:'switch'+(state.settings.hideSkipIfTired?' on':'')})
+        ])
+      ])
+    ])
+  ]);
+  return wrap;
+}
+
+function renderStopCard(stop, withinDate){
+  const done = !!state.done[stop.id];
+  const skipped = !!state.skipped[stop.id];
+
+  const isSafe = stop.ibs_level === 'Safe';
+  const card = h('div',{class:'card'+(state.settings.ibsMode && isSafe ? ' safe' : '') + (done||skipped ? ' collapsed' : '')},[]);
+
+  // Top meta row
+  const leftMeta = h('div',{class:'meta'},[
+    h('span',{class:'chip'},[stop.time_block]),
+    timeRange(stop) ? h('span',{class:'chip muted'},[timeRange(stop)]) : null,
+    stop.priority ? h('span',{class:'chip outline'},[stop.priority]) : null,
+  ]);
+
+  // Reorder controls (only inside By Day view)
+  const reorder = h('div',{class:'meta'},[
+    h('button',{class:'btn', title:'Move up', onClick:()=>moveStop(stop.id, -1)},['↑']),
+    h('button',{class:'btn', title:'Move down', onClick:()=>moveStop(stop.id, +1)},['↓'])
+  ]);
+
+  // Title
+  const title = h('p',{class:'h1'},[stop.name]);
+
+  const subline = h('div',{class:'subline'},[
+    stop.district ? h('span',{class:'chip'},[stop.district]) : null,
+    stop.type ? h('span',{class:'chip muted'},[stop.type]) : null,
+    stop.creative_mode ? h('span',{class:'chip outline'},[stop.creative_mode]) : null,
+    state.settings.ibsMode ? h('span',{class:'chip'},[stop.ibs_level || '—']) : null
+  ].filter(Boolean));
+
+  const addr = h('a',{
+    class:'addr',
+    href: stop.google_maps_url || mapsUrlFromAddress(stop.address),
+    target:'_blank',
+    rel:'noopener'
+  },[
+    h('div',{},[
+      h('div',{},[stop.address || '[Add address in Data tab]']),
+      h('small',{},['Tap to open Maps'])
+    ]),
+    h('div',{class:'chip'},['↗'])
+  ]);
+  addr.addEventListener('contextmenu', (e)=>{ e.preventDefault(); copyText(stop.address); });
+
+  const btnRow = h('div',{class:'btnRow'},[
+    h('button',{class:'btn', onClick:()=>window.open(stop.google_maps_url || mapsUrlFromAddress(stop.address),'_blank')},['Maps']),
+    h('button',{class:'btn', onClick:()=>window.open(stop.grab_url || grabUrlFromAddress(stop.address),'_blank')},['Grab']),
+    h('button',{class:'btn'+(done?' primary':''), onClick:()=>toggleDone(stop.id)},[done?'Done ✓':'Done']),
+    h('button',{class:'btn'+(skipped?' primary':''), onClick:()=>toggleSkip(stop.id)},[skipped?'Skip ✓':'Skip']),
+    h('button',{class:'btn ghost', onClick:()=>copyText(stop.address)},['Copy address'])
+  ]);
+
+  const ibsDetails = h('details',{},[
+    h('summary',{},['IBS Notes']),
+    h('div',{class:'sheetText', style:'margin-top:8px;'},[stop.ibs_notes || '—'])
+  ]);
+
+  if(state.settings.ibsMode){
+    // Auto-open IBS notes for SAFE and CAUTION
+    if(stop.ibs_level === 'Safe' || stop.ibs_level === 'Caution') ibsDetails.open = true;
+  }
+
+  const promptBtn = h('button',{class:'btn', onClick:()=>{
+    const prompts = Array.isArray(stop.creative_prompts) ? stop.creative_prompts : [];
+    const lines = prompts.map((p,i)=>`<div style="margin:8px 0;">${i+1}. ${escapeHtml(p)}</div>`).join('');
+    openSheet(`${stop.creative_mode || 'Creative'} Prompts`, lines || '<div class="sheetText">No prompts set.</div>');
+  }},['Prompt']);
+
+  const noteKey = stop.id;
+  const noteVal = state.stopNotes[noteKey] || '';
+  const noteBox = h('textarea',{class:'noteArea', placeholder:'Personal note (saved)…'},[]);
+  noteBox.value = noteVal;
+  noteBox.addEventListener('input', ()=>{ state.stopNotes[noteKey] = noteBox.value; persistAll(); });
+
+  const noteDetails = h('details',{},[
+    h('summary',{},['Personal note']),
+    h('div',{style:'margin-top:10px;'},[noteBox])
+  ]);
+
+  // Assemble
+  card.appendChild(h('div',{class:'row'},[leftMeta, withinDate ? reorder : null].filter(Boolean)));
+  card.appendChild(title);
+  card.appendChild(subline);
+  card.appendChild(addr);
+  card.appendChild(h('div',{class:'btnRow'},[promptBtn]));
+  card.appendChild(btnRow);
+
+  // IBS notes visible by default if IBS mode is on and safe/caution
+  card.appendChild(ibsDetails);
+  card.appendChild(noteDetails);
+
+  return card;
+}
+
+function toggleDone(id){
+  state.done[id] = !state.done[id];
+  if(state.done[id]) state.skipped[id] = false;
+  persistAll();
+  render();
+}
+function toggleSkip(id){
+  state.skipped[id] = !state.skipped[id];
+  if(state.skipped[id]) state.done[id] = false;
+  persistAll();
+  render();
+}
+
+function moveStop(id, delta){
+  // move within same date only
+  const idx = itinerary.findIndex(s=>s.id===id);
+  if(idx<0) return;
+  const date = itinerary[idx].date;
+  // collect indices for that date in current order
+  const indices = itinerary.map((s,i)=>({s,i})).filter(x=>x.s.date===date).map(x=>x.i);
+  const pos = indices.indexOf(idx);
+  if(pos<0) return;
+  const newPos = pos + delta;
+  if(newPos<0 || newPos>=indices.length) return;
+  const swapIdx = indices[newPos];
+  const tmp = itinerary[idx];
+  itinerary[idx] = itinerary[swapIdx];
+  itinerary[swapIdx] = tmp;
+  persistAll();
+  render();
+}
+
+function renderTodayView(root){
+  const d = selectedDate();
+  const dayStops = itinerary.filter(s=>s.date===d);
+
+  const title = h('div',{},[
+    h('div',{class:'sectionTitle'},['Today']),
+    h('div',{class:'small'},[`Showing: ${formatDayLabel(d)}`])
+  ]);
+
+  root.appendChild(title);
+
+  const toolkit = renderToolkit();
+  if(toolkit) root.appendChild(toolkit);
+
+  if(!dayStops.length){
+    root.appendChild(h('div',{class:'card'},[
+      h('p',{class:'h1'},['No stops today']),
+      h('div',{class:'sheetText'},['Add stops in the Data tab.'])
+    ]));
+    return;
+  }
+
+  let stops = [...dayStops].sort((a,b)=>stopSortKey(a).localeCompare(stopSortKey(b)));
+
+  // filters
+  stops = applyFilters(stops);
+
+  // move done/skipped to bottom
+  const active = stops.filter(s=>!state.done[s.id] && !state.skipped[s.id]);
+  const completed = stops.filter(s=>state.done[s.id] || state.skipped[s.id]);
+  const ordered = [...active, ...completed];
+
+  for(const s of ordered){
+    root.appendChild(renderStopCard(s, false));
+  }
+}
+
+function renderByDayView(root){
+  root.appendChild(h('div',{class:'sectionTitle'},['By Day']));
+
+  const toolkit = renderToolkit();
+  if(toolkit) root.appendChild(toolkit);
+
+  const dates = getDates();
+  for(const d of dates){
+    const stops = itinerary.filter(s=>s.date===d);
+    const dayLabel = stops[0]?.day_label || '';
+
+    const day = h('div',{class:'day'},[]);
+    const head = h('div',{class:'dayHead', onClick:()=>{ day.classList.toggle('open'); }},[
+      h('div',{},[
+        h('div',{class:'dayTitle'},[`${dayLabel} • ${formatDayLabel(d)}`]),
+        h('div',{class:'dayMeta'},[TRIP_META.base])
+      ]),
+      h('div',{class:'chip'},[day.classList.contains('open')?'−':'+' ])
+    ]);
+
+    const body = h('div',{class:'dayBody'},[]);
+
+    // Day notes + inspo links
+    const dn = state.dayNotes[d] || '';
+    const dnArea = h('textarea',{class:'noteArea', placeholder:'Day note (saved)…'},[]);
+    dnArea.value = dn;
+    dnArea.addEventListener('input', ()=>{ state.dayNotes[d] = dnArea.value; persistAll(); });
+
+    const inspoWrap = renderInspoSection(d);
+
+    body.appendChild(h('details',{},[
+      h('summary',{},['Day note']),
+      h('div',{style:'margin-top:10px;'},[dnArea])
+    ]));
+    body.appendChild(inspoWrap);
+
+    // Stops grouped by time block
+    let dayStops = stops.slice().sort((a,b)=>stopSortKey(a).localeCompare(stopSortKey(b)));
+    dayStops = applyFilters(dayStops);
+
+    // move done/skipped to bottom
+    const active = dayStops.filter(s=>!state.done[s.id] && !state.skipped[s.id]);
+    const completed = dayStops.filter(s=>state.done[s.id] || state.skipped[s.id]);
+    const ordered = [...active, ...completed];
+
+    for(const s of ordered){
+      body.appendChild(renderStopCard(s, true));
+    }
+
+    day.appendChild(head);
+    day.appendChild(body);
+
+    // auto-open the selected date
+    if(d === selectedDate()) day.classList.add('open');
+
+    root.appendChild(day);
+  }
+}
+
+function applyFilters(stops){
+  let out = [...stops];
+  if(state.settings.hideSkipIfTired){
+    out = out.filter(s=>!s.skip_if_tired);
+  }
+  if(state.settings.ibsMode && state.settings.filterSafeOnly){
+    out = out.filter(s=>s.ibs_level==='Safe' || s.ibs_level==='Caution');
+  }
+  return out;
+}
+
+function renderMapListView(root){
+  root.appendChild(h('div',{class:'sectionTitle'},['Map List']));
+  const d = selectedDate();
+  const stops = itinerary.filter(s=>s.date===d).sort((a,b)=>stopSortKey(a).localeCompare(stopSortKey(b)));
+
+  root.appendChild(h('div',{class:'small'},[`Showing: ${formatDayLabel(d)} (change date in header)`]));
+
+  for(const s of applyFilters(stops)){
+    root.appendChild(h('div',{class:'card'},[
+      h('div',{class:'row'},[
+        h('div',{class:'meta'},[
+          h('span',{class:'chip'},[s.time_block]),
+          h('span',{class:'chip outline'},[s.type||'Stop'])
+        ]),
+        h('span',{class:'chip muted'},[s.district||''])
+      ]),
+      h('p',{class:'h1', style:'margin:0;'},[s.name]),
+      h('div',{class:'btnRow'},[
+        h('button',{class:'btn', onClick:()=>window.open(s.google_maps_url || mapsUrlFromAddress(s.address),'_blank')},['Open Maps']),
+        h('button',{class:'btn', onClick:()=>window.open(s.grab_url || grabUrlFromAddress(s.address),'_blank')},['Grab']),
+        h('button',{class:'btn ghost', onClick:()=>copyText(s.address)},['Copy address'])
+      ]),
+      h('div',{class:'sheetText'},[s.address || '—'])
+    ]));
+  }
+}
+
+function renderNotesView(root){
+  root.appendChild(h('div',{class:'sectionTitle'},['Notes']));
+
+  const packingKey = '__packing';
+  const ibsKey = '__ibs';
+  const generalKey = '__general';
+
+  const defaults = {
+    [generalKey]: 'Trip focus: slow, creative, IBS-friendly.\n\nOne theme: texture / light / signage.',
+    [packingKey]: '- Watercolor kit (A5)\n- Water brush\n- Small towel\n- 1 book\n- Electrolytes\n- Buscopan (if prescribed)\n- Comfortable shoes',
+    [ibsKey]: '- Avoid garlic/onion; sauce on the side\n- Prefer rice + lean protein\n- Early dinner\n- Hydrate + warm tea\n- Rest window before flight'
+  };
+
+  const noteBlocks = [
+    {key: generalKey, title:'Trip-wide notes'},
+    {key: packingKey, title:'Packing list'},
+    {key: ibsKey, title:'IBS reminders'}
+  ];
+
+  for(const nb of noteBlocks){
+    const val = state.dayNotes[nb.key] ?? defaults[nb.key] ?? '';
+    const ta = h('textarea',{class:'noteArea'},[]);
+    ta.value = val;
+    ta.addEventListener('input', ()=>{ state.dayNotes[nb.key] = ta.value; persistAll(); });
+    root.appendChild(h('div',{class:'card'},[
+      h('div',{class:'row'},[
+        h('div',{class:'dayTitle'},[nb.title]),
+        h('span',{class:'chip muted'},['Saved'])
+      ]),
+      ta
+    ]));
+  }
+}
+
+function renderInspoSection(dateStr){
+  const items = Array.isArray(state.dayInspo[dateStr]) ? state.dayInspo[dateStr] : [];
+
+  const labelInput = h('input',{type:'text', placeholder:'Label (e.g., “Cafe interior”)'});
+  const urlInput = h('input',{type:'url', placeholder:'Link (IG/Pinterest/Notes URL)'});
+
+  const addBtn = h('button',{class:'btn primary', onClick:()=>{
+    const label = (labelInput.value||'').trim();
+    const url = (urlInput.value||'').trim();
+    if(!url) return;
+    const next = [...items, {label: label || 'Inspo', url}];
+    state.dayInspo[dateStr] = next;
+    persistAll();
+    render();
+  }},['Add link']);
+
+  const list = h('div',{class:'linkList'},[]);
+  for(let i=0;i<items.length;i++){
+    const it = items[i];
+    list.appendChild(h('div',{class:'linkItem'},[
+      h('div',{},[
+        h('div',{class:'small'},[it.label||'Inspo']),
+        h('a',{href:it.url,target:'_blank',rel:'noopener'},[it.url])
+      ]),
+      h('button',{class:'btn', onClick:()=>{
+        const next = items.slice();
+        next.splice(i,1);
+        state.dayInspo[dateStr] = next;
+        persistAll();
+        render();
+      }},['Remove'])
+    ]));
+  }
+
+  return h('details',{},[
+    h('summary',{},['Inspo links (no uploads)']),
+    h('div',{style:'margin-top:10px; display:flex; flex-direction:column; gap:10px;'},[
+      h('div',{class:'twoCol'},[
+        h('div',{},[h('label',{},['Label']), labelInput]),
+        h('div',{},[h('label',{},['URL']), urlInput])
+      ]),
+      h('div',{style:'display:flex; gap:10px; align-items:center;'},[
+        addBtn,
+        h('span',{class:'small'},['Tip: long-press a stop address card to copy.'])
+      ]),
+      items.length ? list : h('div',{class:'small'},['No links yet.'])
+    ])
+  ]);
+}
+
+function renderDataView(root){
+  root.appendChild(h('div',{class:'sectionTitle'},['Data']));
+
+  // JSON editor
+  const ta = h('textarea',{class:'noteArea', style:'min-height:220px;'},[]);
+  ta.value = JSON.stringify(itinerary, null, 2);
+
+  const err = h('div',{class:'small danger', style:'display:none;'},['']);
+
+  const btnApply = h('button',{class:'btn primary', onClick:()=>{
+    try{
+      const parsed = JSON.parse(ta.value);
+      if(!Array.isArray(parsed)) throw new Error('Itinerary JSON must be an array');
+      // Minimal validation
+      for(const s of parsed){
+        if(!s.id || !s.date || !s.name) throw new Error('Each stop needs: id, date, name');
+      }
+      itinerary = parsed;
+      hydrateLinks();
+      persistAll();
+      err.style.display='none';
+      renderHeader();
+      render();
+      openSheet('Saved', '<div class="sheetText">Itinerary updated.</div>');
+    }catch(e){
+      err.textContent = 'JSON error: ' + e.message;
+      err.style.display='block';
+    }
+  }},['Apply JSON']);
+
+  const btnExport = h('button',{class:'btn', onClick:()=>downloadText('itinerary.json', JSON.stringify(itinerary, null, 2))},['Export JSON']);
+  const btnImport = h('button',{class:'btn', onClick:()=>filePick((text)=>{ ta.value = text; })},['Import JSON']);
+  const btnDefault = h('button',{class:'btn ghost', onClick:()=>{
+    itinerary = structuredClone(ITINERARY_DEFAULT);
+    hydrateLinks();
+    persistAll();
+    ta.value = JSON.stringify(itinerary, null, 2);
+    renderHeader();
+    render();
+  }},['Restore defaults']);
+
+  // Quick add stop
+  const fName = h('input',{type:'text', placeholder:'Stop name'});
+  const fDate = h('input',{type:'text', placeholder:'YYYY-MM-DD (e.g., 2026-01-28)'});
+  fDate.value = selectedDate();
+  const fBlock = h('input',{type:'text', placeholder:'Time block (e.g., Morning)'});
+  const fAddr = h('input',{type:'text', placeholder:'Address'});
+  const fMaps = h('input',{type:'url', placeholder:'Google Maps URL (optional)'});
+
+  const btnAdd = h('button',{class:'btn primary', onClick:()=>{
+    const name = (fName.value||'').trim();
+    const date = (fDate.value||'').trim();
+    const block = (fBlock.value||'').trim() || 'Afternoon';
+    const addr = (fAddr.value||'').trim();
+    if(!name || !date){
+      openSheet('Missing fields', '<div class="sheetText">Please fill at least <b>name</b> and <b>date</b>.</div>');
+      return;
+    }
+    const id = 'x-' + Math.random().toString(16).slice(2,10);
+    const dayLabel = (itinerary.find(s=>s.date===date)?.day_label) || 'Day';
+    const s = {
+      id,
+      day_label: dayLabel,
+      date,
+      time_block: block,
+      start_time: '',
+      end_time: '',
+      name,
+      type: 'Landmark',
+      address: addr,
+      district: '',
+      google_maps_url: fMaps.value.trim(),
+      grab_url: '',
+      ibs_level: 'Safe',
+      ibs_notes: '',
+      creative_mode: 'Rest',
+      creative_prompts: ['','',''],
+      priority: 'Nice',
+      duration_mins: 30,
+      tags: [],
+      skip_if_tired: true
+    };
+    if(!s.google_maps_url && s.address) s.google_maps_url = mapsUrlFromAddress(s.address);
+    if(!s.grab_url && s.address) s.grab_url = grabUrlFromAddress(s.address);
+
+    itinerary.push(s);
+    persistAll();
+    ta.value = JSON.stringify(itinerary, null, 2);
+    renderHeader();
+    render();
+    // clear
+    fName.value=''; fAddr.value=''; fMaps.value='';
+    openSheet('Added', '<div class="sheetText">Stop added. You can reorder with ↑ ↓ in By Day.</div>');
+  }},['Add stop']);
+
+  // Backup center
+  const btnBackup = h('button',{class:'btn', onClick:()=>downloadText('vn-trip-backup.json', JSON.stringify({
+    itinerary,
+    state,
+    meta: TRIP_META,
+    version: APP.version,
+    exported_at: new Date().toISOString()
+  }, null, 2))},['Download Backup']);
+
+  const btnRestore = h('button',{class:'btn', onClick:()=>filePick((text)=>{
+    try{
+      const parsed = JSON.parse(text);
+      if(!parsed || !Array.isArray(parsed.itinerary) || !parsed.state) throw new Error('Invalid backup file');
+      itinerary = parsed.itinerary;
+      state = parsed.state;
+      hydrateLinks();
+      persistAll();
+      renderHeader();
+      render();
+      openSheet('Restored', '<div class="sheetText">Backup restored.</div>');
+    }catch(e){
+      openSheet('Restore failed', `<div class="sheetText danger">${escapeHtml(e.message)}</div>`);
+    }
+  })},['Restore Backup']);
+
+  const btnReset = h('button',{class:'btn ghost', onClick:()=>{
+    openSheet('Reset all?', `
+      <div class="sheetText">This will wipe saved status/notes + restore defaults.</div>
+      <div style="margin-top:12px; display:flex; justify-content:flex-end; gap:10px;">
+        <button class="btn" id="cancelReset">Cancel</button>
+        <button class="btn primary" id="doReset">Reset</button>
+      </div>
+    `);
+    setTimeout(()=>{
+      const c = document.getElementById('cancelReset');
+      const d = document.getElementById('doReset');
+      if(c) c.onclick = () => closeSheet();
+      if(d) d.onclick = () => {
+        itinerary = structuredClone(ITINERARY_DEFAULT);
+        state = {
+          done: {}, skipped: {}, stopNotes: {}, dayNotes: {}, dayInspo: {},
+          settings: { ibsMode:false, filterSafeOnly:false, hideSkipIfTired:false, selectedDate:null, activeTab:'byday' }
+        };
+        hydrateLinks();
+        persistAll();
+        closeSheet();
+        renderHeader();
+        render();
+      };
+    }, 0);
+  }},['Reset All']);
+
+  root.appendChild(h('div',{class:'card'},[
+    h('div',{class:'row'},[h('div',{class:'dayTitle'},['Edit itinerary JSON']), h('span',{class:'chip muted'},['Saved locally'])]),
+    err,
+    ta,
+    h('div',{class:'btnRow'},[btnApply, btnImport, btnExport, btnDefault])
+  ]));
+
+  root.appendChild(h('div',{class:'card'},[
+    h('div',{class:'dayTitle'},['Add Stop (quick)']),
+    h('div',{class:'twoCol'},[
+      h('div',{},[h('label',{},['Name']), fName]),
+      h('div',{},[h('label',{},['Date']), fDate])
+    ]),
+    h('div',{class:'twoCol'},[
+      h('div',{},[h('label',{},['Time block']), fBlock]),
+      h('div',{},[h('label',{},['Address']), fAddr])
+    ]),
+    h('div',{},[h('label',{},['Maps URL (optional)']), fMaps]),
+    h('div',{class:'btnRow'},[btnAdd, h('span',{class:'small'},['Reorder later using ↑ ↓ on cards (By Day).'])])
+  ]));
+
+  root.appendChild(h('div',{class:'card'},[
+    h('div',{class:'dayTitle'},['Backup Center']),
+    h('div',{class:'sheetText'},['Download everything (itinerary + notes + done/skip + settings) as a single JSON, and restore anytime.']),
+    h('div',{class:'btnRow'},[btnBackup, btnRestore, btnReset])
+  ]));
+}
+
+function render(){
+  renderHeader();
+  const root = el('#viewRoot');
+  root.innerHTML = '';
+
+  const tab = state.settings.activeTab || 'byday';
+  const tEls = els('.tab');
+  tEls.forEach(x=>x.classList.toggle('active', x.dataset.tab===tab));
+
+  if(tab==='today') renderTodayView(root);
+  else if(tab==='byday') renderByDayView(root);
+  else if(tab==='map') renderMapListView(root);
+  else if(tab==='notes') renderNotesView(root);
+  else if(tab==='data') renderDataView(root);
+}
+
+function escapeHtml(str){
+  return (str||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+}
+
+/******** File helpers ********/
+function downloadText(filename, text){
+  const blob = new Blob([text], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  setTimeout(()=>{ URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+}
+
+function filePick(onText){
+  const input = document.createElement('input');
+  input.type = 'file';
+  input.accept = '.json,application/json,text/plain';
+  input.onchange = async () => {
+    const file = input.files && input.files[0];
+    if(!file) return;
+    const text = await file.text();
+    onText(text);
+  };
+  input.click();
+}
+
+/******** Tabs ********/
+els('.tab').forEach(tab=>{
+  tab.addEventListener('click', ()=>{
+    state.settings.activeTab = tab.dataset.tab;
+    persistAll();
+    render();
+  });
+});
+
+/******** Modal ********/
+el('#sheetClose').onclick = closeSheet;
+el('#overlay').addEventListener('click', (e)=>{ if(e.target.id==='overlay') closeSheet(); });
+
+/******** PWA install ********/
+let installPrompt = null;
+window.__deferredPrompt = null;
+window.addEventListener('beforeinstallprompt', (e)=>{
+  e.preventDefault();
+  installPrompt = e;
+  window.__deferredPrompt = e;
+  renderHeader();
+});
+
+el('#btnInstall').addEventListener('click', async ()=>{
+  if(!installPrompt) return;
+  installPrompt.prompt();
+  await installPrompt.userChoice;
+  installPrompt = null;
+  window.__deferredPrompt = null;
+  renderHeader();
+});
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  });
+}
+
+// Initial render
+render();
+
+</script>
+</body>
+</html>
