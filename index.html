@@ -1925,17 +1925,24 @@ function renderByDayView(root){
   if(toolkit) root.appendChild(toolkit);
 
   const dates = getDates();
+
+  // Mobile-first: show details by default so days never look "empty".
+  // You can still collapse a day by tapping its header.
   for(const d of dates){
     const stops = itinerary.filter(s=>s.date===d);
     const dayLabel = stops[0]?.day_label || '';
 
     const day = h('div',{class:'day'},[]);
-    const head = h('div',{class:'dayHead', onClick:()=>{ day.classList.toggle('open'); }},[
+    const plusEl = h('div',{class:'chip'},['−']);
+    const head = h('div',{class:'dayHead', onClick:()=>{
+      day.classList.toggle('open');
+      plusEl.textContent = day.classList.contains('open') ? '−' : '+';
+    }},[
       h('div',{},[
         h('div',{class:'dayTitle'},[`${dayLabel} • ${formatDayLabel(d)}`]),
         h('div',{class:'dayMeta'},[TRIP_META.base])
       ]),
-      h('div',{class:'chip'},[day.classList.contains('open')?'−':'+' ])
+      plusEl
     ]);
 
     const body = h('div',{class:'dayBody'},[]);
@@ -1969,7 +1976,8 @@ function renderByDayView(root){
     day.appendChild(head);
     day.appendChild(body);
 
-    if(d === selectedDate()) day.classList.add('open');
+    // Open by default (important for first-time users)
+    day.classList.add('open');
     root.appendChild(day);
   }
 
@@ -1977,12 +1985,16 @@ function renderByDayView(root){
   const optional = itinerary.filter(s=>String(s.date).toUpperCase()==='ANY');
   if(optional.length){
     const day = h('div',{class:'day'},[]);
-    const head = h('div',{class:'dayHead', onClick:()=>{ day.classList.toggle('open'); }},[
+    const plusEl = h('div',{class:'chip'},['−']);
+    const head = h('div',{class:'dayHead', onClick:()=>{
+      day.classList.toggle('open');
+      plusEl.textContent = day.classList.contains('open') ? '−' : '+';
+    }},[
       h('div',{},[
         h('div',{class:'dayTitle'},['Optional • Any day']),
         h('div',{class:'dayMeta'},['Use when you have extra energy'])
       ]),
-      h('div',{class:'chip'},['+' ])
+      plusEl
     ]);
     const body = h('div',{class:'dayBody'},[]);
     let opts = optional.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||''));
@@ -1992,6 +2004,7 @@ function renderByDayView(root){
     }
     day.appendChild(head);
     day.appendChild(body);
+    day.classList.add('open');
     root.appendChild(day);
   }
 }
