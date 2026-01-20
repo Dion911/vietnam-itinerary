@@ -1949,7 +1949,8 @@ function renderByDayView(root){
 
     const day = h('div',{class:'day'},[]);
     const plusEl = h('div',{class:'chip'},['−']);
-    dayItems.push({day, plusEl});
+    // store with stable key name used by the toggle-all handler
+    dayItems.push({day, plusEl: plusEl});
     const head = h('div',{class:'dayHead', onClick:()=>{
       day.classList.toggle('open');
       plusEl.textContent = day.classList.contains('open') ? '−' : '+';
@@ -2004,7 +2005,8 @@ function renderByDayView(root){
   if(optional.length){
     const day = h('div',{class:'day'},[]);
     const plusEl = h('div',{class:'chip'},['−']);
-    dayItems.push({day, plusEl});
+    // store with stable key name used by the toggle-all handler
+    dayItems.push({day, plusEl: plusEl});
     const head = h('div',{class:'dayHead', onClick:()=>{
       day.classList.toggle('open');
       plusEl.textContent = day.classList.contains('open') ? '−' : '+';
