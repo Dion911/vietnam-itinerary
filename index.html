@@ -380,7 +380,7 @@
  *****/
 
 const APP = {
-  version: '1.1.0',
+  version: '1.2.0',
   storageKeys: {
     itinerary: 'vn_itinerary_json_v2',
     state: 'vn_itinerary_state_v2',
@@ -1771,10 +1771,25 @@ function renderStopCard(stop, withinDate){
     stop.priority ? h('span',{class:'chip outline'},[stop.priority]) : null,
   ]);
 
-  // Reorder controls (only inside By Day view)
+  // Reorder + move-to-day controls (By Day view)
+  const moveSelect = h('select',{},[]);
+  const options = moveDayOptions(String(stop.date||''));
+  for(const o of options){
+    const opt = h('option',{value:o.value},[o.label]);
+    if(String(o.value)===String(stop.date)) opt.selected = true;
+    moveSelect.appendChild(opt);
+  }
+  moveSelect.addEventListener('change', ()=>moveStopToDate(stop.id, moveSelect.value));
+
+  const movePill = h('div',{class:'pill', style:'padding:6px 10px;'},[
+    h('span',{class:'small'},['Move']),
+    moveSelect
+  ]);
+
   const reorder = h('div',{class:'meta'},[
     h('button',{class:'btn', title:'Move up', onClick:()=>moveStop(stop.id, -1)},['↑']),
-    h('button',{class:'btn', title:'Move down', onClick:()=>moveStop(stop.id, +1)},['↓'])
+    h('button',{class:'btn', title:'Move down', onClick:()=>moveStop(stop.id, +1)},['↓']),
+    movePill
   ]);
 
   // Title
@@ -1879,6 +1894,43 @@ function moveStop(id, delta){
   const tmp = itinerary[idx];
   itinerary[idx] = itinerary[swapIdx];
   itinerary[swapIdx] = tmp;
+  persistAll();
+  render();
+}
+
+
+function dayLabelForDate(dateStr){
+  const s = itinerary.find(x=>x.date===dateStr && x.day_label);
+  return s ? s.day_label : '';
+}
+function moveDayOptions(currentDate){
+  const dates = getDates();
+  const opts = dates.map(d=>({
+    value:d,
+    label:`${dayLabelForDate(d) || 'Day'} • ${formatDayLabel(d)}`
+  }));
+  // Optional / ANY-day bucket
+  opts.push({value:'ANY', label:'Optional • Any day'});
+  // Ensure current date is present even if it's a new date not in getDates() yet
+  if(currentDate && String(currentDate).toUpperCase()!=='ANY' && !opts.some(o=>String(o.value)===String(currentDate))){
+    opts.unshift({value:currentDate, label:`${dayLabelForDate(currentDate) || 'Day'} • ${formatDayLabel(currentDate)}`});
+  }
+  return opts;
+}
+function moveStopToDate(id, newDate){
+  const idx = itinerary.findIndex(s=>s.id===id);
+  if(idx<0) return;
+  const nd = String(newDate||'').toUpperCase()==='ANY' ? 'ANY' : newDate;
+  itinerary[idx].date = nd;
+
+  // Update day_label to match the target day bucket
+  if(String(nd).toUpperCase()==='ANY'){
+    itinerary[idx].day_label = 'Optional';
+  } else {
+    const label = dayLabelForDate(nd);
+    if(label) itinerary[idx].day_label = label;
+  }
+
   persistAll();
   render();
 }
@@ -2025,7 +2077,7 @@ function renderByDayView(root){
     let opts = optional.slice().sort((a,b)=>(a.name||'').localeCompare(b.name||''));
     opts = applyFilters(opts);
     for(const s of opts){
-      body.appendChild(renderStopCard(s, false));
+      body.appendChild(renderStopCard(s, true));
     }
     day.appendChild(head);
     day.appendChild(body);

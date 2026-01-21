@@ -1,5 +1,5 @@
 /* Vietnam Itinerary Dashboard - Service Worker */
-const CACHE_NAME = 'vn-itinerary-v1.1.4';
+const CACHE_NAME = 'vn-itinerary-v1.2.0';
 const ASSETS = [
   './',
   './index.html',
